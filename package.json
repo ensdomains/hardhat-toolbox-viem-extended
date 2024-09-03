@@ -1,0 +1,52 @@
+{
+  "name": "@ensdomains/hardhat-toolbox-viem-extended",
+  "version": "0.0.1",
+  "type": "module",
+  "license": "MIT",
+  "main": "./_cjs/index.js",
+  "module": "./_esm/index.js",
+  "types": "./_types/index.d.ts",
+  "typings": "./_types/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "_esm",
+    "_cjs",
+    "_types",
+    "src",
+    "!**/*.tsbuildinfo"
+  ],
+  "exports": {
+    ".": {
+      "types": "./_types/index.d.ts",
+      "import": "./_esm/index.js",
+      "require": "./_cjs/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "hh": "NODE_OPTIONS='--experimental-loader ts-node/esm/transpile-only' hardhat",
+    "compile": "bun hh compile",
+    "build:cjs": "tsc --project tsconfig.build.json --module commonjs --outDir ./_cjs --removeComments --verbatimModuleSyntax false && echo > ./_cjs/package.json '{\"type\":\"commonjs\"}'",
+    "build:esm": "tsc --project tsconfig.build.json --module es2022 --outDir ./_esm && echo > ./_esm/package.json '{\"type\":\"module\",\"sideEffects\":false}'",
+    "build:types": "tsc --project ./tsconfig.build.json --module esnext --declarationDir ./_types --emitDeclarationOnly --declaration --declarationMap",
+    "build": "bun run clean && bun run build:cjs && bun run build:esm && bun run build:types",
+    "clean": "rm -fr _cjs _esm _types",
+    "prepublishOnly": "bun run build"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-viem": "^2.0.3",
+    "@types/bun": "latest",
+    "hardhat": "^2.22.9",
+    "hardhat-deploy": "^0.12.4",
+    "ts-node": "^10.9.2"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0",
+    "@nomicfoundation/hardhat-viem": "^2.0.3",
+    "hardhat": "^2.22.9",
+    "hardhat-deploy": "^0.12.4"
+  },
+  "patchedDependencies": {
+    "@nomicfoundation/hardhat-viem@2.0.3": "patches/@nomicfoundation%2Fhardhat-viem@2.0.3.patch"
+  }
+}
