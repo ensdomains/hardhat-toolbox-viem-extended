@@ -1,7 +1,6 @@
 import type { HardhatUserConfig } from "hardhat/config";
 
-import "@nomicfoundation/hardhat-viem";
-import "hardhat-deploy";
+import "./src/index.cjs";
 import "./tasks/esm_fix.cjs";
 
 const config = {
@@ -19,5 +18,11 @@ const config = {
     },
   },
 } satisfies HardhatUserConfig;
+
+declare module "@nomicfoundation/hardhat-viem/types.js" {
+  interface Register {
+    config: typeof config;
+  }
+}
 
 export default config;

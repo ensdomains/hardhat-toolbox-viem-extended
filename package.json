@@ -36,6 +36,9 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-viem": "^2.0.3",
     "@types/bun": "latest",
+    "@types/chai": "^4.3.19",
+    "@types/mocha": "^10.0.7",
+    "chai": "^5.1.1",
     "hardhat": "^2.22.9",
     "hardhat-deploy": "^0.12.4",
     "ts-node": "^10.9.2"

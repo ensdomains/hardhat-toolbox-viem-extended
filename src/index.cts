@@ -37,10 +37,13 @@ type Client = Required<KeyedClient> & {
   address: viemAddress;
   account: Account;
 };
-type NewDeployContractConfig = OriginalDeployContractConfig & {
+type WithoutArtifactConfig = OriginalDeployContractConfig & {
+  alias?: string;
+};
+type NewDeployContractConfig = WithoutArtifactConfig & {
   artifact?: Artifact;
 };
-type RequiredArtifactConfig = Omit<OriginalDeployContractConfig, "artifact"> & {
+type RequiredArtifactConfig = Omit<WithoutArtifactConfig, "artifact"> & {
   artifact: Artifact;
 };
 type DeployResultWithViemAddress = Omit<DeployResult, "address"> & {
@@ -66,7 +69,7 @@ interface DeployContract {
   <contractName extends ArtifactName>(
     contractName: contractName,
     args: ContractConstructorArgs<ContractTypesMap[contractName]["abi"]>,
-    options?: OriginalDeployContractConfig
+    options?: WithoutArtifactConfig
   ): Promise<DeployResultWithViemAddress>;
   (
     contractName: string,
@@ -232,6 +235,8 @@ const deploy =
     const [defaultWalletClient] = await hre.viem.getWalletClients();
     const walletClient = options?.client?.wallet ?? defaultWalletClient;
 
+    const displayName = options?.alias ?? contractName;
+
     const legacyOptions = objectWithoutUndefined({
       args,
       from: walletClient.account.address,
@@ -242,11 +247,12 @@ const deploy =
       gasPrice: options?.gasPrice?.toString(),
       maxFeePerGas: options?.maxFeePerGas?.toString(),
       maxPriorityFeePerGas: options?.maxPriorityFeePerGas?.toString(),
+      contract: options?.artifact ?? contractName,
     }) satisfies DeployOptions;
 
     if (hre.network.saveDeployments)
       return hre.deployments.deploy(
-        contractName as string,
+        displayName as string,
         legacyOptions
       ) as Promise<DeployResultWithViemAddress>;
 
