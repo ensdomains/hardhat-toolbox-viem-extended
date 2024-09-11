@@ -6,7 +6,7 @@ import { zeroAddress, type Address } from "viem";
 const { viem } = hre;
 
 before(async () => {
-  await fs.rm("./deployments", { recursive: true });
+  await fs.rm("./deployments", { recursive: true, force: true });
 });
 
 let address: Address = zeroAddress;

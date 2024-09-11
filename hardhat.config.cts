@@ -1,6 +1,6 @@
 import type { HardhatUserConfig } from "hardhat/config";
 
-import "./src/index.cjs";
+import "./src/index.js";
 import "./tasks/esm_fix.cjs";
 
 const config = {

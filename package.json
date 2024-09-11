@@ -13,7 +13,8 @@
     "_cjs",
     "_types",
     "src",
-    "!**/*.tsbuildinfo"
+    "!**/*.tsbuildinfo",
+    "!src/package.json"
   ],
   "exports": {
     ".": {
