@@ -271,7 +271,7 @@ const deploy =
     }
 
     const artifact =
-      options?.artifact ?? (await hre.artifacts.readArtifact(contractName));
+      options?.artifact ?? (await hre.deployments.getArtifact(contractName));
     const deployHash = await walletClient.deployContract({
       abi: artifact.abi,
       bytecode: artifact.bytecode as Hex,
