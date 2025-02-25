@@ -10,6 +10,7 @@ before(async () => {
 });
 
 let address: Address = zeroAddress;
+let aliasAddress: Address = zeroAddress;
 
 it("deploys contract", async () => {
   const deployedContract = await viem.deploy("Test", []);
@@ -30,10 +31,18 @@ it("allows aliases", async () => {
     alias: "TestWithAlias",
   });
   expect(deployedContract.address).not.to.be.undefined;
+  aliasAddress = deployedContract.address;
   expect(deployedContract.address).not.to.equal(address);
   const contract = await viem.getContract("TestWithAlias" as "Test");
   const message = await contract.read.getMessage();
   expect(message).to.equal("Hello, World!");
+});
+
+it("reuses contract with alias", async () => {
+  const deployedContract = await viem.deploy("Test", [], {
+    alias: "TestWithAlias",
+  });
+  expect(deployedContract.address).to.equal(aliasAddress);
 });
 
 it("allows custom artifacts", async () => {

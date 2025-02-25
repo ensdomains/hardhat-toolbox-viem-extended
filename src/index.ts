@@ -23,10 +23,12 @@ import "hardhat/types/runtime.js";
 import {
   getAddress,
   getContract as getViemContract,
+  TransactionReceiptNotFoundError,
   type Account,
   type ContractConstructorArgs,
   type Hash,
   type Hex,
+  type PublicClient,
   type TransactionReceipt,
   type Address as viemAddress,
 } from "viem";
@@ -193,12 +195,27 @@ const getUnnamedClients = (hre: HardhatRuntimeEnvironment) => async () => {
 
   return clients;
 };
+const waitForTransaction = async (publicClient: PublicClient, hash: Hash) =>
+  new Promise<TransactionReceipt>((resolveFn, reject) => {
+    publicClient
+      .getTransactionReceipt({ hash })
+      .then(resolveFn)
+      .catch((e) => {
+        if (e instanceof TransactionReceiptNotFoundError) {
+          setTimeout(() => {
+            waitForTransaction(publicClient, hash).then(resolveFn);
+          }, 100);
+        } else {
+          reject(e);
+        }
+      });
+  });
 
 const waitForTransactionSuccess =
   (hre: HardhatRuntimeEnvironment) => async (hash: Hash) => {
     const publicClient = await hre.viem.getPublicClient();
 
-    const receipt = await publicClient.waitForTransactionReceipt({ hash });
+    const receipt = await waitForTransaction(publicClient, hash);
     if (receipt.status !== "success")
       throw new Error(`Transaction failed: ${hash}`);
 
